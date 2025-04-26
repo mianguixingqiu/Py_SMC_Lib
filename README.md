@@ -1,0 +1,2 @@
+# Py_SMC_Lib
+使用python调用雷赛智能的SMC300、SMC600系列控制器的动态库
