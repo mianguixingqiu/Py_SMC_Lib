@@ -67,6 +67,14 @@ class SMCController:
             ctypes.POINTER(ctypes.c_double*100),
             ctypes.POINTER(ctypes.c_double*100)]
         self.smc_dll.smc_ptt_table_unit.restype = ctypes.c_short
+
+        #PTS模式
+        self.smc_dll.smc_pts_table_unit.argtypes =[
+            wintypes.WORD, wintypes.WORD, wintypes.DWORD,
+            ctypes.POINTER(ctypes.c_double*1000),
+            ctypes.POINTER(ctypes.c_double*1000),
+            ctypes.POINTER(ctypes.c_double*1000)]
+        
         #启动PVT运动
         self.smc_dll.smc_pvt_move.argtypes =[wintypes.WORD, wintypes.WORD,ctypes.POINTER(wintypes.WORD)]
         self.smc_dll.smc_pvt_move.restype = ctypes.c_short
@@ -162,13 +170,16 @@ class SMCController:
     def pts_table_unit(self, connect_no, axis, count,ptime,ppos,ppercent):##############未完善，要改动
         #connect_no:指定链接号
         #axis:指定轴号
-        #count:指定数据点个数，每个数据表有100个存储空间，每个数据点占用1个存储空间
+        #count:指定数据点个数，每个数据表有1000个存储空间，每个数据点占用1个存储空间
         #ptime:指定时间数组，单位s(精度ms)
         #ppos:指定位置数组，单位unit(um)
         #ppercent:指定速度百分比数组，范围0-100
-        ptime_array = (ctypes.c_double * 100)(*ptime)
-        ppos_array = (ctypes.c_double * 100)(*ppos)
-        result=self.smc_dll.smc_pts_table_unit(connect_no, axis, count, ptime_array,ppos_array)
+        ptime_array = (ctypes.c_double * 1000)(*ptime)
+        ppos_array = (ctypes.c_double * 1000)(*ppos)
+        ppercent_array = (ctypes.c_double * 1000)(*ppercent)
+        result=self.smc_dll.smc_pts_table_unit(connect_no, axis, count, ptime_array,ppos_array,ppercent_array)
+        return result
+    
     def pvt_move(self,connect_no,axisnum,axislist):
         #connectno:指定连接号
         #axisnum：轴数量
